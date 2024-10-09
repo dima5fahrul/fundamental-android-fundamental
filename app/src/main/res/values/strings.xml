@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">Submission Awal Android Fundamental</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="upcoming">Upcoming</string>
+    <string name="finished">Finished</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="dicoding_event">Dicoding Event</string>
+    <string name="recommendation_event_for_you">Recommendation event for you</string>
+    <string name="avatar">Avatar</string>
+    <string name="event_title">Event Title</string>
+    <string name="event_summary">Event Summary</string>
+    <string name="event_begin_time">Event Begin Time</string>
+    <string name="event_category">Event Category</string>
+    <string name="event_city_name">Event City Name</string>
+    <string name="the_event_have_been_finished">The event have been finished</string>
+</resources>
