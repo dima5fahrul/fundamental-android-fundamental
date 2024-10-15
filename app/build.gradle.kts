@@ -69,7 +69,6 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-    implementation(libs.android.async.http)
     implementation(libs.glide)
     implementation(libs.androidx.room.runtime)
     ksp(libs.room.compiler)
@@ -78,4 +77,6 @@ dependencies {
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.androidx.work.runtime)
+    implementation(libs.android.async.http)
 }

@@ -36,4 +36,6 @@
     <string name="link_tidak_tersedia">Link tidak tersedia</string>
     <string name="result_is_null">Result is null</string>
     <string name="save_bookmark">Save Bookmark</string>
+    <string name="reminder">Reminder</string>
+    <string name="enable_event_reminder">Enable event reminder</string>
 </resources>

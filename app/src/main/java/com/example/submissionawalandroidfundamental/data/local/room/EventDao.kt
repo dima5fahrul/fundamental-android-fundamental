@@ -23,14 +23,14 @@ interface EventDao {
     fun getBookmarkedEvents(): LiveData<List<EventEntity>>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insertEvents(events: List<EventEntity>)
+    suspend fun insertEvents(events: List<EventEntity>)
 
     @Update
-    fun updateEvent(event: EventEntity)
+    suspend fun updateEvent(event: EventEntity)
 
     @Query("DELETE FROM listEvents WHERE bookmarked = 0")
-    fun deleteAll()
+    suspend fun deleteAll()
 
     @Query("SELECT EXISTS(SELECT * FROM listEvents WHERE name = :name AND bookmarked = 1)")
-    fun isEventBookmarked(name: String): Boolean
+    suspend fun isEventBookmarked(name: String): Boolean
 }
