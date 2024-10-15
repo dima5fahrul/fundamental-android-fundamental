@@ -41,7 +41,7 @@ class FinishedFragment : Fragment() {
             if (event.isBookmarked) {
                 viewModel.deleteEvent(event)
             } else {
-                viewModel.saveEvent(event)
+                viewModel.saveEvent(event, true)
             }
         }
 

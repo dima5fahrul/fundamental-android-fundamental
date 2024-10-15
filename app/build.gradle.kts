@@ -71,6 +71,7 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     implementation(libs.glide)
     implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
     ksp(libs.room.compiler)
     implementation(libs.retrofit.v250)
     implementation(libs.converter.gson.v250)

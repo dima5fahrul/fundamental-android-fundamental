@@ -28,6 +28,7 @@ workRuntime = "2.9.1"
 android-async-http = { module = "com.loopj.android:android-async-http", version.ref = "androidAsyncHttp" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
+androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "roomCompiler" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomRuntime" }
 androidx-work-runtime = { module = "androidx.work:work-runtime", version.ref = "workRuntime" }
 converter-gson-v250 = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGsonVersion" }
