@@ -8,11 +8,9 @@ import retrofit2.http.Query
 
 interface ApiService {
     @GET("/events")
-    fun getEvents(): Call<EventResponse>
-
-    @GET("/events")
     fun getFinishedEvents(
-        @Query("active") active: Int = 0
+        @Query("active") active: Int = 0,
+        @Query("q") query: String? = null
     ): Call<EventResponse>
 
     @GET("/events")

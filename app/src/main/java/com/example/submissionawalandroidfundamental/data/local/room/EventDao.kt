@@ -13,6 +13,12 @@ interface EventDao {
     @Query("SELECT * FROM listEvents")
     fun getEvents(): LiveData<List<EventEntity>>
 
+    @Query("SELECT * FROM listEvents where beginTime >= :currentDate")
+    fun getUpcomingEvents(currentDate: String): LiveData<List<EventEntity>>
+
+    @Query("SELECT * FROM listEvents where beginTime < :currentDate")
+    fun getFinishedEvents(currentDate: String): LiveData<List<EventEntity>>
+
     @Query("SELECT * FROM listEvents where bookmarked = 1")
     fun getBookmarkedEvents(): LiveData<List<EventEntity>>
 

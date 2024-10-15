@@ -9,6 +9,7 @@ import com.example.submissionawalandroidfundamental.data.remote.response.EventRe
 import com.example.submissionawalandroidfundamental.data.remote.retrofit.ApiConfig
 import com.example.submissionawalandroidfundamental.data.remote.retrofit.ApiService
 import com.example.submissionawalandroidfundamental.utils.AppExecutors
+import com.example.submissionawalandroidfundamental.utils.DataHelper
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -59,8 +60,8 @@ class EventRepository private constructor(
                                     event.cityName,
                                     event.quota,
                                     event.registrants,
-                                    event.beginTime,
-                                    event.endTime,
+                                    DataHelper.convertDate(event.beginTime),
+                                    DataHelper.convertDate(event.endTime),
                                     event.link,
                                     isBookmarked
                                 )
@@ -77,7 +78,68 @@ class EventRepository private constructor(
                 }
             })
 
-            val localData = eventDao.getEvents()
+            val currentTime = DataHelper.getCurrentDate()
+            val localData = eventDao.getUpcomingEvents(currentTime)
+            result.addSource(localData) { newData: List<EventEntity> ->
+                result.value = Result.Success(newData)
+            }
+            return result
+        } catch (e: Exception) {
+            Log.e("EventRepository", e.message.toString())
+            throw Exception(e.message)
+        }
+    }
+
+    fun getFinishedEvents(query: String?): LiveData<Result<List<EventEntity>>> {
+        result.value = Result.Loading
+        apiService = ApiConfig.getApiService()
+        val client = apiService.getFinishedEvents(query = query)
+        try {
+            client.enqueue(object : Callback<EventResponse> {
+                override fun onResponse(
+                    call: Call<EventResponse>,
+                    response: Response<EventResponse>
+                ) {
+                    if (response.isSuccessful) {
+                        val events = response.body()?.listEvents
+                        val eventList = ArrayList<EventEntity>()
+
+                        appExecutors.diskIO.execute {
+                            events?.forEach { event ->
+                                val isBookmarked = event.name.let { eventDao.isEventBookmarked(it) }
+
+                                val eventEntity = EventEntity(
+                                    event.id,
+                                    event.name,
+                                    event.summary,
+                                    event.description,
+                                    event.imageLogo,
+                                    event.mediaCover,
+                                    event.category,
+                                    event.ownerName,
+                                    event.cityName,
+                                    event.quota,
+                                    event.registrants,
+                                    DataHelper.convertDate(event.beginTime),
+                                    DataHelper.convertDate(event.endTime),
+                                    event.link,
+                                    isBookmarked
+                                )
+                                eventList.add(eventEntity)
+                            }
+                            eventDao.deleteAll()
+                            eventDao.insertEvents(eventList)
+                        }
+                    }
+                }
+
+                override fun onFailure(call: Call<EventResponse>, t: Throwable) {
+                    result.value = Result.Error(t.message.toString())
+                }
+            })
+
+            val currentTime = DataHelper.getCurrentDate()
+            val localData = eventDao.getFinishedEvents(currentTime)
             result.addSource(localData) { newData: List<EventEntity> ->
                 result.value = Result.Success(newData)
             }

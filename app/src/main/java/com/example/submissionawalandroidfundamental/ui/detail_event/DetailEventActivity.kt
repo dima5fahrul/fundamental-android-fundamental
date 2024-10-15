@@ -13,11 +13,11 @@ import com.bumptech.glide.Glide
 import com.example.submissionawalandroidfundamental.R
 import com.example.submissionawalandroidfundamental.data.local.entity.EventEntity
 import com.example.submissionawalandroidfundamental.databinding.ActivityDetailEventBinding
-import com.example.submissionawalandroidfundamental.utils.DataHelper
 
 class DetailEventActivity : AppCompatActivity() {
     private lateinit var _binding: ActivityDetailEventBinding
 
+    @Suppress("DEPRECATION")
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,17 +42,16 @@ class DetailEventActivity : AppCompatActivity() {
             _binding.tvDetailCategory.text = it.category
             _binding.tvDetailSummary.text = it.summary
             _binding.tvDetailDescription.text = HtmlCompat.fromHtml(
-                it.description.toString(),
+                it.description,
                 HtmlCompat.FROM_HTML_MODE_LEGACY
             )
-            _binding.tvDetailBeginTime.text = DataHelper
-                .convertDate(it.beginTime.toString())
+            _binding.tvDetailBeginTime.text = it.beginTime
             val quota = it.quota
             val registrants = it.registrants
-            val remainingQuota = quota!! - registrants!!
+            val remainingQuota = quota - registrants
             _binding.tvDetailQuota.text = remainingQuota.toString()
             val linked = it.link
-            if (!linked.isNullOrEmpty()) {
+            if (linked.isNotEmpty()) {
                 _binding.btnDetailRegister.text = getString(R.string.daftar_sekarang)
                 _binding.btnDetailRegister.setOnClickListener {
                     val intent = Intent(Intent.ACTION_VIEW, Uri.parse(linked))

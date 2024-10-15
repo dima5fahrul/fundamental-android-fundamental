@@ -68,12 +68,7 @@ class UpcomingFragment : Fragment() {
                                 .show()
                         }
                     }
-                }
-//                    viewModel.getBookmarkedEvents().observe(viewLifecycleOwner) { bookmarkedEvent ->
-//                        binding.progressBar.visibility = View.GONE
-//                        upcomingAdapter.submitList(bookmarkedEvent)
-//                    }
-                else {
+                } else {
                     Log.d("UpcomingFragment", "Result is null")
                     Snackbar.make(
                         requireView(), getString(R.string.result_is_null), Snackbar.LENGTH_SHORT

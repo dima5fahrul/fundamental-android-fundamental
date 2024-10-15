@@ -11,5 +11,10 @@ class DataHelper {
             val date = inputFormat.parse(inputDate)
             return outputFormat.format(date!!)
         }
+
+        fun getCurrentDate(): String {
+            val outputFormat = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
+            return outputFormat.format(System.currentTimeMillis())
+        }
     }
 }

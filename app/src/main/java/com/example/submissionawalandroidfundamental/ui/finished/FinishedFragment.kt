@@ -1,22 +1,22 @@
 package com.example.submissionawalandroidfundamental.ui.finished
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.submissionawalandroidfundamental.R
+import com.example.submissionawalandroidfundamental.data.Result
 import com.example.submissionawalandroidfundamental.databinding.FragmentFinishedBinding
-import com.example.submissionawalandroidfundamental.models.EventModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
 
 class FinishedFragment : Fragment() {
     private var _binding: FragmentFinishedBinding? = null
     private val binding get() = _binding!!
-    private lateinit var viewModel: FinishedViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -28,28 +28,59 @@ class FinishedFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         val bottomNav = requireActivity().findViewById<BottomNavigationView>(R.id.nav_view)
         val bottomNavHeight = bottomNav.height
         binding.rvUpcoming.setPadding(0, 0, 0, bottomNavHeight * 3)
 
-        viewModel = ViewModelProvider(
-            this,
-            ViewModelProvider.NewInstanceFactory()
-        )[FinishedViewModel::class.java]
-        binding.rvUpcoming.layoutManager = LinearLayoutManager(context)
+        val factory: FinishedViewModelFactory =
+            FinishedViewModelFactory.getInstance(requireActivity())
+        val viewModel: FinishedViewModel by viewModels { factory }
 
-        viewModel.finishedEvents.observe(viewLifecycleOwner) { events ->
-            val adapter = FinishedEventAdapter(events as ArrayList<EventModel>)
-            binding.rvUpcoming.adapter = adapter
+        val finishedAdapter = FinishedEventAdapter { event ->
+            if (event.isBookmarked) {
+                viewModel.deleteEvent(event)
+            } else {
+                viewModel.saveEvent(event)
+            }
         }
 
-        viewModel.isLoading.observe(viewLifecycleOwner, ::showLoading)
+        binding.rvUpcoming.apply {
+            layoutManager = LinearLayoutManager(context)
+            adapter = finishedAdapter
+        }
 
-        viewModel.error.observe(viewLifecycleOwner) { error ->
-            error?.let {
-                Snackbar.make(requireView(), it, Snackbar.LENGTH_SHORT)
-                    .setAnchorView(binding.rvUpcoming)
-                    .show()
+        if (finishedAdapter.itemCount == 0) {
+            viewModel.getFinishedEvents(null).observe(viewLifecycleOwner) { result ->
+                if (result != null) {
+                    when (result) {
+                        is Result.Loading -> {
+                            binding.progressBar.visibility = View.VISIBLE
+                        }
+
+                        is Result.Success -> {
+                            binding.progressBar.visibility = View.GONE
+                            finishedAdapter.submitList(result.data)
+                        }
+
+                        is Result.Error -> {
+                            binding.progressBar.visibility = View.GONE
+                            Snackbar.make(
+                                requireView(),
+                                getString(R.string.terjadi_kesalahan), Snackbar.LENGTH_SHORT
+                            )
+                                .setAnchorView(binding.rvUpcoming)
+                                .show()
+                        }
+                    }
+                } else {
+                    Log.d("UpcomingFragment", "Result is null")
+                    Snackbar.make(
+                        requireView(), getString(R.string.result_is_null), Snackbar.LENGTH_SHORT
+                    )
+                        .setAnchorView(binding.rvUpcoming)
+                        .show()
+                }
             }
         }
 
@@ -60,7 +91,7 @@ class FinishedFragment : Fragment() {
                 .setOnEditorActionListener { textView, _, _ ->
                     searchBar.setText(searchView.text)
                     searchView.hide()
-                    viewModel.loadFinishedEvents(textView.text.toString())
+                    viewModel.getFinishedEvents(textView.text.toString())
                     true
                 }
         }
@@ -69,9 +100,5 @@ class FinishedFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-    }
-
-    private fun showLoading(isLoading: Boolean) {
-        binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
     }
 }
