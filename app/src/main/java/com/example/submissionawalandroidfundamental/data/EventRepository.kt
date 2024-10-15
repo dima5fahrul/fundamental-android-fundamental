@@ -2,13 +2,11 @@ package com.example.submissionawalandroidfundamental.data
 
 import android.util.Log
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.liveData
 import androidx.lifecycle.map
 import com.example.submissionawalandroidfundamental.data.local.entity.EventEntity
 import com.example.submissionawalandroidfundamental.data.local.room.EventDao
 import com.example.submissionawalandroidfundamental.data.remote.retrofit.ApiService
-import com.example.submissionawalandroidfundamental.utils.AppExecutors
 import com.example.submissionawalandroidfundamental.utils.DataHelper
 
 class EventRepository private constructor(
@@ -104,10 +102,9 @@ class EventRepository private constructor(
         fun getInstance(
             apiService: ApiService,
             eventDao: EventDao,
-            appExecutors: AppExecutors
         ): EventRepository =
             instance ?: synchronized(this) {
-                instance ?: EventRepository(apiService, eventDao, appExecutors)
+                instance ?: EventRepository(apiService, eventDao)
             }.also { instance = it }
     }
 }
