@@ -126,4 +126,6 @@
             @color/md_theme_surfaceContainerHighest_highContrast
         </item>
     </style>
+
+    <style name="Theme.SubmissionAwalAndroidFundamental" parent="ThemeOverlay.AppTheme.HighContrast" />
 </resources>

@@ -22,4 +22,16 @@
         android:name="com.example.submissionawalandroidfundamental.ui.finished.FinishedFragment"
         android:label="@string/finished"
         tools:layout="@layout/fragment_finished" />
+
+    <fragment
+        android:id="@+id/navigation_favorite"
+        android:name="com.example.submissionawalandroidfundamental.ui.favorite.FavoriteFragment"
+        android:label="@string/favorite"
+        tools:layout="@layout/fragment_favorite" />
+
+    <fragment
+        android:id="@+id/navigation_settings"
+        android:name="com.example.submissionawalandroidfundamental.ui.settings.SettingsFragment"
+        android:label="@string/setting"
+        tools:layout="@layout/fragment_settings" />
 </navigation>

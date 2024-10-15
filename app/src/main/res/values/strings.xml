@@ -16,4 +16,24 @@
     <string name="event_category">Event Category</string>
     <string name="event_city_name">Event City Name</string>
     <string name="the_event_have_been_finished">The event have been finished</string>
+    <string name="media_cover">Media Cover</string>
+    <string name="owner_name">Owner Name</string>
+    <string name="event_quota">Event Quota</string>
+    <string name="event_description">Event Description</string>
+    <string name="deskripsi">Deskripsi</string>
+    <string name="summary">Summary</string>
+    <string name="daftar_acara">Daftar Acara</string>
+    <string name="upcoming_event">Upcoming Event</string>
+    <string name="finished_event">Finished Event</string>
+    <string name="cari">Cari</string>
+    <string name="favorite">Favorite</string>
+    <string name="setting">Setting</string>
+    <string name="dark_mode">Dark Mode</string>
+    <string name="enable_dark_mode_to_reduce_eye_strain_in_low_light_environments">Enable dark mode to reduce eye strain in low light environments.</string>
+    <string name="enable_dark_mode">Enable dark mode</string>
+    <string name="terjadi_kesalahan">Terjadi kesalahan</string>
+    <string name="daftar_sekarang">Daftar Sekarang</string>
+    <string name="link_tidak_tersedia">Link tidak tersedia</string>
+    <string name="result_is_null">Result is null</string>
+    <string name="save_bookmark">Save Bookmark</string>
 </resources>

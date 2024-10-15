@@ -1,39 +1,87 @@
 package com.example.submissionawalandroidfundamental.ui.upcoming
 
+import android.annotation.SuppressLint
+import android.content.Intent
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.example.submissionawalandroidfundamental.R
-import com.example.submissionawalandroidfundamental.models.UpcomingEventModel
+import com.example.submissionawalandroidfundamental.data.local.entity.EventEntity
+import com.example.submissionawalandroidfundamental.databinding.ItemListBinding
+import com.example.submissionawalandroidfundamental.ui.detail_event.DetailEventActivity
 
-class UpcomingAdapter(private val listReview: ArrayList<UpcomingEventModel>) :
-    RecyclerView.Adapter<UpcomingAdapter.ViewHolder>() {
+class UpcomingAdapter(private val onBookmarkClick: (EventEntity) -> Unit) :
+    ListAdapter<EventEntity, UpcomingAdapter.MyViewHolder>(DIFF_CALLBACK) {
+    class MyViewHolder(val binding: ItemListBinding) : RecyclerView.ViewHolder(
+        binding.root
+    ) {
+        fun bind(event: EventEntity) {
+            binding.tvItemName.text = event.name
+            binding.tvItemCityName.text = event.cityName
+            binding.tvItemBeginTime.text = event.beginTime
+            Glide.with(itemView.context)
+                .load(event.mediaCover)
+                .apply(
+                    RequestOptions.placeholderOf(R.drawable.ic_refresh_black)
+                        .error(R.drawable.ic_error)
+                )
+                .into(binding.imgItemPhoto)
 
-    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val imgPhoto: ImageView = view.findViewById(R.id.img_item_photo)
-        val tvName: TextView = view.findViewById(R.id.tv_item_name)
-        val tvBeginTime: TextView = view.findViewById(R.id.tv_item_begin_time)
-        val tvCityName: TextView = view.findViewById(R.id.tv_item_city_name)
+            itemView.setOnClickListener {
+                val intent = Intent(itemView.context, DetailEventActivity::class.java)
+                intent.putExtra("listEvents", event)
+                itemView.context.startActivity(intent)
+            }
+        }
     }
 
-    override fun getItemCount(): Int = listReview.size
+    override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
+        val event = getItem(position)
+        holder.bind(event)
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val event = listReview[position]
-        Glide.with(holder.itemView.context)
-            .load(event.photo)
-            .into(holder.imgPhoto)
-        holder.tvName.text = event.name
-        holder.tvBeginTime.text = event.beginTime
-        holder.tvCityName.text = event.cityName
+        val ivBookmark = holder.binding.ivBookmark
+        if (event.isBookmarked) {
+            ivBookmark.setImageDrawable(
+                ContextCompat.getDrawable(
+                    ivBookmark.context,
+                    R.drawable.ic_bookmarked_black
+                )
+            )
+        } else {
+            ivBookmark.setImageDrawable(
+                ContextCompat.getDrawable(
+                    ivBookmark.context,
+                    R.drawable.ic_bookmark_black
+                )
+            )
+        }
+        ivBookmark.setOnClickListener { onBookmarkClick(event) }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_list, parent, false)
-        return ViewHolder(view)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
+        val binding = ItemListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return MyViewHolder(binding)
+    }
+
+    companion object {
+        val DIFF_CALLBACK: DiffUtil.ItemCallback<EventEntity> =
+            object : DiffUtil.ItemCallback<EventEntity>() {
+                override fun areItemsTheSame(oldItem: EventEntity, newItem: EventEntity): Boolean {
+                    return oldItem.id == newItem.id
+                }
+
+                @SuppressLint("DiffUtilEquals")
+                override fun areContentsTheSame(
+                    oldItem: EventEntity,
+                    newItem: EventEntity
+                ): Boolean {
+                    return oldItem == newItem
+                }
+            }
     }
 }
