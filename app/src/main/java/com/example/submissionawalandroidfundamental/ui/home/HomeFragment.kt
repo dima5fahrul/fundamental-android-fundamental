@@ -5,19 +5,27 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.submissionawalandroidfundamental.R
+import com.example.submissionawalandroidfundamental.data.SettingPreferences
+import com.example.submissionawalandroidfundamental.data.dataStore
 import com.example.submissionawalandroidfundamental.databinding.FragmentHomeBinding
+import com.example.submissionawalandroidfundamental.databinding.FragmentSettingsBinding
 import com.example.submissionawalandroidfundamental.models.EventModel
+import com.example.submissionawalandroidfundamental.ui.settings.SettingsViewModel
+import com.example.submissionawalandroidfundamental.ui.settings.SettingsViewModelFactory
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
+    private var _bindingSetting: FragmentSettingsBinding? = null
     private val binding get() = _binding!!
     private lateinit var viewModel: HomeViewModel
+    private val bindingSetting get() = _bindingSetting!!
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -25,6 +33,7 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
+        _bindingSetting = FragmentSettingsBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -34,10 +43,26 @@ class HomeFragment : Fragment() {
         val bottomNavHeight = bottomNav.height
         binding.rvVerticalFinished.setPadding(0, 0, 0, bottomNavHeight * 5)
 
+        val pref = SettingPreferences.getInstance(requireContext().dataStore)
+        val settingViewModel: SettingsViewModel = ViewModelProvider(
+            this,
+            SettingsViewModelFactory(pref)
+        )[SettingsViewModel::class.java]
         viewModel = ViewModelProvider(
             this,
             ViewModelProvider.NewInstanceFactory()
         )[HomeViewModel::class.java]
+
+        val switchTheme = bindingSetting.swDarkMode
+        settingViewModel.getThemeSettings().observe(viewLifecycleOwner) { isDarkMode ->
+            if (isDarkMode) {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                switchTheme.isChecked = true
+            } else {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                switchTheme.isChecked = false
+            }
+        }
 
         binding.rvHorizontalUpcoming.layoutManager =
             LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)

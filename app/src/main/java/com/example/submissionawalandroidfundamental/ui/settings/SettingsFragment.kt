@@ -67,7 +67,7 @@ class SettingsFragment : Fragment() {
         workManager = WorkManager.getInstance(requireContext())
 
         val pref = SettingPreferences.getInstance(requireContext().dataStore)
-        val settingViewModel = ViewModelProvider(
+        val settingViewModel: SettingsViewModel = ViewModelProvider(
             this,
             SettingsViewModelFactory(pref)
         )[SettingsViewModel::class.java]
